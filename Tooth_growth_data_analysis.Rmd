@@ -1,0 +1,91 @@
+---
+title: "Tooth Growth Data Analysis"
+author: "MALLESH SUBRAMANI M"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Overview
+            
+    ToothGrowth data is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, orange juice or ascorbic acid (a form of vitamin C and coded as VC).
+
+##Basic Exploratory Analysis
+```{r exp1,echo=TRUE}
+data("ToothGrowth")     #load Tooth Growth data
+dim(ToothGrowth)        #find the dimension of data
+nrow(ToothGrowth)       #find number of rows
+ncol(ToothGrowth)       #find number of columns
+names(ToothGrowth)      #obtain the column names
+head(ToothGrowth)       #look at first 6 data entered
+tail(ToothGrowth)       #look at last 6 data entered 
+summary(ToothGrowth)    #obtain the summary of the data
+```
+
+```{r exp2,echo=FALSE}
+boxplot(split(ToothGrowth$len,ToothGrowth$supp),xlab="supp",ylab="len")
+```
+```{r exp9,echo=TRUE}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
+    
+##Basic Summary    
+    
+    The above data shows the basic summary of the Tooth Growth data.It consists of 60 rows and 3 columns, the columns are named as "len","supp","dose",minimum value and maximum value for "len" is 4.20 and 33.90 respectively,minimum and maximum value for "dose" is 0.5 and 2 respectively.From the above figure we also get to know that the mean value for "OJ" samples is much higher compared to "VC" samples,it means that most of the values of the "OJ" samples lie near the mean value, that is the test conducted with "OJ" samples has the highest tooth growth rate.
+    
+```{r exp3,echo=FALSE}
+boxplot(split(ToothGrowth$len,ToothGrowth$dose),xlab="dose",ylab="len")
+```
+
+    From the above plot we can also infer that 1mg of dosage has a large range of values compared to the other quantities used without dependence on the type of suppliments, also 2mg dosage has the highest tooth growth rate, but not conclusive.
+    
+##Hypothesis Testing
+        
+    We can consider the null hypothesis as the mean for the two different suppliments are equal, setting the alpha value as 0.05 and the data values are not paired.
+```{r exp4,echo=TRUE}
+##Calculating variance for different suppliments
+aggregate(len~supp,data=ToothGrowth,var)
+```
+   
+    From the above values of variances we can conclude that the variances are equal
+##Effect of tooth growth based on the suppliments used
+```{r exp5,echo=TRUE}
+t.test(subset(ToothGrowth,ToothGrowth$supp=="OJ")$len,subset(ToothGrowth,ToothGrowth$supp=="VC")$len,var.equal=TRUE,paired=FALSE)
+``` 
+     
+    As we can see from the above test that the p value for two diiferent suppliments are slightly greater than the assumed value hence we cannot comment on the null hypothesis,as mean of  OJ is slightly greater the other mean we can possibly conclude that suppliment OJ is better than VC.
+    
+##Effect of tooth growth based on the dosage
+```{r exp6,echo=TRUE}
+##Calculating variance for different dosage levels
+aggregate(len~dose,data=ToothGrowth,var)    
+```
+
+    From the above values of variance we can conclude that the variances are not equal
+    
+```{r exp7,echo=TRUE}
+##t.test for 0.5mg and 1mg dosage
+t.test(subset(ToothGrowth,ToothGrowth$dose==0.5)$len,subset(ToothGrowth,ToothGrowth$dose==1)$len,var.equal=FALSE,paired=FALSE)
+##t.test for 1mg and 2mg dosage
+t.test(subset(ToothGrowth,ToothGrowth$dose==1)$len,subset(ToothGrowth,ToothGrowth$dose==2)$len,var.equal=FALSE,paired=FALSE)
+##t.test for 0.5mg and 2mg dosage
+t.test(subset(ToothGrowth,ToothGrowth$dose==0.5)$len,subset(ToothGrowth,ToothGrowth$dose==2)$len,var.equal=FALSE,paired=FALSE)
+```
+
+    From the above tests conducted for the different dosages, looking at the confidence intervals we can conclude that the tooth growth rate increases as the quantity of samples increases.
+```{r exp8,echo=TRUE}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
+##Conclusions
+->We can conclude that the tooth growth rate increases as the quantity of dosage used.
+
+->OJ suppliment is comparitively better than VC.
+
+->1mg dosage has thicker rectangle in the box plot compared to the other dosages, that is to say the tooth growth is consistent in all the subjects.This particular dosage works on most of the subjects tested with slight variance in the result.
+
+
+
